@@ -132,7 +132,9 @@ class OrderViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
 
         # Если статус заказа изменен на 1, отправляем сообщение на почту клиента
-        if instance.status != serializer.validated_data['status'] and serializer.validated_data['status'] == 1:
+        if instance.status != serializer.validated_data['status'] and \
+           serializer.validated_data['status'] == 1 and \
+           instance.customer_car.customer.is_send_notify:
             send_mail(
                 subject=f'Статус вашего заказа №{instance.pk} изменен',
                 message='Ваш заказ выполнен.',
